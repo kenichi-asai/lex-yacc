@@ -1,0 +1,188 @@
+   0  $accept : %entry% $end
+
+   1  start : expr EOF
+
+   2  simple_expr : NUMBER
+   3              | LPAREN expr RPAREN
+
+   4  expr : simple_expr
+   5       | expr MINUS expr
+   6       | expr TIMES expr
+   7       | MINUS expr
+
+   8  %entry% : '\001' start
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . start  (8)
+
+	LPAREN  shift 3
+	MINUS  shift 4
+	NUMBER  shift 5
+	.  error
+
+	start  goto 6
+	expr  goto 7
+	simple_expr  goto 8
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	simple_expr : LPAREN . expr RPAREN  (3)
+
+	LPAREN  shift 3
+	MINUS  shift 4
+	NUMBER  shift 5
+	.  error
+
+	expr  goto 9
+	simple_expr  goto 8
+
+
+state 4
+	expr : MINUS . expr  (7)
+
+	LPAREN  shift 3
+	MINUS  shift 4
+	NUMBER  shift 5
+	.  error
+
+	expr  goto 10
+	simple_expr  goto 8
+
+
+state 5
+	simple_expr : NUMBER .  (2)
+
+	.  reduce 2
+
+
+state 6
+	%entry% : '\001' start .  (8)
+
+	.  reduce 8
+
+
+state 7
+	start : expr . EOF  (1)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+
+	MINUS  shift 11
+	TIMES  shift 12
+	EOF  shift 13
+	.  error
+
+
+state 8
+	expr : simple_expr .  (4)
+
+	.  reduce 4
+
+
+state 9
+	simple_expr : LPAREN expr . RPAREN  (3)
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+
+	RPAREN  shift 14
+	MINUS  shift 11
+	TIMES  shift 12
+	.  error
+
+
+10: shift/reduce conflict (shift 11, reduce 7) on MINUS
+10: shift/reduce conflict (shift 12, reduce 7) on TIMES
+state 10
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : MINUS expr .  (7)
+
+	MINUS  shift 11
+	TIMES  shift 12
+	RPAREN  reduce 7
+	EOF  reduce 7
+
+
+state 11
+	expr : expr MINUS . expr  (5)
+
+	LPAREN  shift 3
+	MINUS  shift 4
+	NUMBER  shift 5
+	.  error
+
+	expr  goto 15
+	simple_expr  goto 8
+
+
+state 12
+	expr : expr TIMES . expr  (6)
+
+	LPAREN  shift 3
+	MINUS  shift 4
+	NUMBER  shift 5
+	.  error
+
+	expr  goto 16
+	simple_expr  goto 8
+
+
+state 13
+	start : expr EOF .  (1)
+
+	.  reduce 1
+
+
+state 14
+	simple_expr : LPAREN expr RPAREN .  (3)
+
+	.  reduce 3
+
+
+15: shift/reduce conflict (shift 11, reduce 5) on MINUS
+15: shift/reduce conflict (shift 12, reduce 5) on TIMES
+state 15
+	expr : expr . MINUS expr  (5)
+	expr : expr MINUS expr .  (5)
+	expr : expr . TIMES expr  (6)
+
+	MINUS  shift 11
+	TIMES  shift 12
+	RPAREN  reduce 5
+	EOF  reduce 5
+
+
+16: shift/reduce conflict (shift 11, reduce 6) on MINUS
+16: shift/reduce conflict (shift 12, reduce 6) on TIMES
+state 16
+	expr : expr . MINUS expr  (5)
+	expr : expr . TIMES expr  (6)
+	expr : expr TIMES expr .  (6)
+
+	MINUS  shift 11
+	TIMES  shift 12
+	RPAREN  reduce 6
+	EOF  reduce 6
+
+
+State 10 contains 2 shift/reduce conflicts.
+State 15 contains 2 shift/reduce conflicts.
+State 16 contains 2 shift/reduce conflicts.
+
+
+9 terminals, 5 nonterminals
+9 grammar rules, 17 states
