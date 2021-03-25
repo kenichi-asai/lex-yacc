@@ -1,7 +1,8 @@
 :root {
   --center-width: 780px;
   --margin: 10px;
-  --side-width: calc((100% - var(--center-width)) / 2 - var(--margin));
+  --side-width2: calc((100% - var(--center-width)) / 2 - var(--margin));
+  --side-width1: calc((100% - var(--center-width)) - var(--margin));
 }
 
 body {
@@ -9,20 +10,82 @@ body {
   font-family: 'Quattrocento Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-#left {
-  width: var(--side-width);
-  float: left;
-  left: 0;
-  position: fixed;
-  text-align: right;
+@media screen and (min-width: 1000px) {
+
+  #left {
+    width: var(--side-width2);
+    float: left;
+    left: 0;
+    position: fixed;
+    text-align: right;
+  }
+
+  #left2 {
+    display: none;
+  }
+
+  #center {
+    width: var(--center-width);
+    float: left;
+    position: absolute;
+    left: calc(var(--side-width2) + var(--margin));
+    margin: 20px 0;
+  }
+
+  #right {
+    width: var(--side-width2);
+    float: left;
+    right: 0;
+    position: fixed;
+  }
 }
 
-#center {
-  width: var(--center-width);
-  float: left;
-  position: absolute;
-  left: calc(var(--side-width) + var(--margin));
-  margin: 20px 0;
+@media screen and (max-width: 999px) and (min-width: 900px) {
+
+  #left {
+    display: none;
+  }
+
+  #left2 {
+    width: var(--side-width1);
+    float: left;
+    left: 0;
+    position: fixed;
+    text-align: right;
+  }
+
+  #center {
+    width: var(--center-width);
+    float: left;
+    position: absolute;
+    left: calc(var(--side-width1) + var(--margin) / 2);
+    margin: 20px 0;
+  }
+
+  #right {
+    display: none;
+  }
+}
+
+@media print, screen and (max-width: 899px) {
+
+  #left {
+    display: none;
+  }
+
+  #left2 {
+    display: none;
+  }
+
+  #center {
+    width: var(--center-width);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #right {
+    display: none;
+  }
 }
 
 #header {
@@ -37,13 +100,6 @@ body {
   border: 1px solid #cbcbcb;
   border-radius: 4px;
   padding: 30px 30px 10px 30px;
-}
-
-#right {
-  width: var(--side-width);
-  float: left;
-  right: 0;
-  position: fixed;
 }
 
 #bottom {
