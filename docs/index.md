@@ -1539,9 +1539,9 @@ shift/reduce conflict が出たときには、shift を選ぶのが良い場合�
 まずは、これで少し遊んでみてください。
 ゲームをクリアしたときには、明確にクリアしたことがわかるようになっています。
 
-[{{site.program-url}}/game/game.html][1]
+[https://kenichi-asai.github.io/lex-yacc/assets/program/game/game.html][1]
 
-[1]: {{site.program-url}}/game/game.html
+[1]: https://kenichi-asai.github.io/lex-yacc/assets/program/game/game.html
 
 このゲームの特徴は、入力するコマンドの自由度が大きいことです。
 任意の文を理解するとはいきませんが、でも、一見、普通の言葉を理解しているかのような錯覚を覚えます。
