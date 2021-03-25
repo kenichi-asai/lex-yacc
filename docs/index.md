@@ -1104,7 +1104,7 @@ Result : 24
 ### dune を使う方法
 
 ビルドツールである dune を使うと、いちいちコンパイルするコマンドを順に打たなくても、一気にすべてコンパイルしてくれます。
-dune を使うには以下のような [<u>`dune`</u>]({{site.program-url}}/dentaku/dune)
+dune を使うには以下のような [dune]({{site.program-url}}/dentaku/dune)
 という名前のファイルを用意します。
 
 ```txt
@@ -1144,7 +1144,7 @@ dune exec ./main.exe
 
 昔から使われている `make` を使ってコンパイルするには
 OCamlMakefile を使うのが便利です。
-それには以下のような [<u>`Makefile`</u>]({{site.program-url}}/dentaku/Makefile)
+それには以下のような [Makefile]({{site.program-url}}/dentaku/Makefile)
 という名前のファイルを作ります。
 
 ```makefile
