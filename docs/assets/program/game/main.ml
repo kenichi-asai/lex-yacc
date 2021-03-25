@@ -95,7 +95,6 @@ let dispatch input state dousa_list chizu_list = match input with
   | Tandokudoushi (tandokudoushi) ->
       print_endline (tandokudoushi ^ "ことはできません。")
 
-
 (* 目的：現在地の情報を表示する *)
 (* basho_message : state_t -> unit *)
 let basho_message state =
