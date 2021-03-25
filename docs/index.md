@@ -240,7 +240,7 @@ OCaml のコメントのように `(*` と `*)`
 以下、各ファイルについて具体的に説明していきます。
 
 ## 構文木の定義 {#Sugar}
-- 使用ファイル：[syntax.ml](assets/program/dentaku/syntax.ml)
+- 使用ファイル：[syntax.ml]({{site.program-url}}/dentaku/syntax.ml)
 
 引き算言語の文法には、単項のマイナスが含まれていました。
 しかし、２項演算の引き算と単項のマイナスの両方があると、以降の電卓の計算をする際に両方を考えなくてはならずプログラムが煩雑になります。
@@ -320,7 +320,7 @@ let print expr =
 抽象構文木を文字列として表示する際、２項演算に必ず括弧をつけるようにしていますので、どのような抽象構文木が作られたのかを知ることができます。
 
 ## 字句解析ファイル
-- 使用ファイル：[lexer.mll](assets/program/dentaku/lexer.mll)
+- 使用ファイル：[lexer.mll]({{site.program-url}}/dentaku/lexer.mll)
 
 最終的に作られる引き算電卓用の字句解析ファイル `lexer.mll` は以下のようになります。
 
@@ -581,7 +581,7 @@ Fatal error: exception Failure("unknown token: +")
 というエラーを起こして終了します。
 
 ## 構文解析ファイル
-- 使用ファイル：[parser.mly](assets/program/dentaku/parser.mly)
+- 使用ファイル：[parser.mly]({{site.program-url}}/dentaku/parser.mly)
 
 最終的に作られる引き算電卓用の構文解析ファイル `parser.mly` は以下のようになります。
 
@@ -953,7 +953,7 @@ expr:
 となってしまうのを避けています。
 
 ## メインファイル
-- 使用ファイル：[main.ml](assets/program/dentaku/main.ml)
+- 使用ファイル：[main.ml]({{site.program-url}}/dentaku/main.ml)
 
 プログラム全体の入り口となるメインファイル `main.ml` は以下のようになります。
 
@@ -1010,7 +1010,7 @@ let _ = go ()
 ```
 
 ## 引き算電卓の処理
-- 使用ファイル：[eval.ml](assets/program/dentaku/eval.ml)
+- 使用ファイル：[eval.ml]({{site.program-url}}/dentaku/eval.ml)
 
 抽象構文木を受け取って、実際に引き算電卓に必要な計算を行うのが
 `eval.ml` です。
@@ -1103,7 +1103,7 @@ Result : 24
 ### dune を使う方法
 
 ビルドツールである dune を使うと、いちいちコンパイルするコマンドを順に打たなくても、一気にすべてコンパイルしてくれます。
-dune を使うには以下のような [<u>`dune`</u>](assets/program/dentaku/dune)
+dune を使うには以下のような [<u>`dune`</u>]({{site.program-url}}/dentaku/dune)
 という名前のファイルを用意します。
 
 ```txt
@@ -1143,7 +1143,7 @@ dune exec ./main.exe
 
 昔から使われている `make` を使ってコンパイルするには
 OCamlMakefile を使うのが便利です。
-それには以下のような [<u>`Makefile`</u>](assets/program/dentaku/Makefile)
+それには以下のような [<u>`Makefile`</u>]({{site.program-url}}/dentaku/Makefile)
 という名前のファイルを作ります。
 
 ```makefile
@@ -1207,8 +1207,8 @@ ocamlyacc -v parser.mly
 このファイルを見ながら曖昧性を解消します。
 
 ## 構文解析表の読み方 {#ParserOutput}
-- 使用ファイル：[parser-conflict1.mly](assets/program/dentaku/parser-conflict1.mly),
-[parser-conflict1.output](assets/program/dentaku/parser-conflict1.output)
+- 使用ファイル：[parser-conflict1.mly]({{site.program-url}}/dentaku/parser-conflict1.mly),
+[parser-conflict1.output]({{site.program-url}}/dentaku/parser-conflict1.output)
 
 具体的に曖昧な文法の例を見てみましょう。
 前の章で作った `parser.mly` から優先順位の指定
@@ -1419,8 +1419,8 @@ state 16
 この１行のみを指定して、再び ocamlyacc でコンパイルすると shift/reduce conflict の数が４つに減ります。
 
 ## 優先順位による曖昧性の解消
-- 使用ファイル：[parser-conflict2.mly](assets/program/dentaku/parser-conflict2.mly),
-[parser-conflict2.output](assets/program/dentaku/parser-conflict2.output)
+- 使用ファイル：[parser-conflict2.mly]({{site.program-url}}/dentaku/parser-conflict2.mly),
+[parser-conflict2.output]({{site.program-url}}/dentaku/parser-conflict2.output)
 
 `MINUS` の結合規則を指定すると、残る shift/reduce conflict は以下の４つになります。
 
@@ -1532,7 +1532,7 @@ shift/reduce conflict が出たときには、shift を選ぶのが良い場合�
 この章では、簡単なテキストベースのアドベンチャーゲームを例にとって、その字句解析・構文解析がどのようになるのかを紹介します。
 本書で説明をするのは字句解析・構文解析の部分のみで、ゲームの実装については触れません。
 ですが、ゲームの実装部分もそれほど難しくはないので、興味のある方はソースコード中の
-[`main.ml`](assets/program/game/main.ml)
+[`main.ml`]({{site.program-url}}/game/main.ml)
 を解読してみてください。
 
 できあがるアドベンチャーゲームは以下の URL から遊ぶことができます。
@@ -1668,7 +1668,7 @@ shift/reduce conflict が出たときには、shift を選ぶのが良い場合�
 以下、各ファイルについて具体的に説明していきます。
 
 ## 抽象構文木の定義
-- 使用ファイル：[syntax.ml](assets/program/game/syntax.ml)
+- 使用ファイル：[syntax.ml]({{site.program-url}}/game/syntax.ml)
 
 引き算電卓の章で、入力文字列を構文解析した結果は具象構文木を返すのではなく、必要な情報のみを抽出した抽象構文木を返すようにすると説明しました。
 アドベンチャーゲームでも同様に、抽象構文木を定義して、それを構文解析の結果として返すようにします。
@@ -1706,7 +1706,7 @@ type t = Idousuru of string             (* 移動する *)
 例えば `終了する` は `Tandokudoushi ("終了する")` となります。
 
 ## 字句解析ファイル
-- 使用ファイル：[lexer.mll](assets/program/game/lexer.mll)
+- 使用ファイル：[lexer.mll]({{site.program-url}}/game/lexer.mll)
 
 アドベンチャーゲーム用の字句解析ファイル `lexer.mll`
 の内容を順に見ていきましょう。
@@ -1821,7 +1821,7 @@ end of file ではなく end of line にしてみました。
 最後のケースは少し複雑でしたが、基本的には使いたい単語を並べ、対応するトークンを書くだけで `lexer.mll` を書けていることがわかります。
 
 ## 構文解析ファイル
-- 使用ファイル：[parser.mly](assets/program/game/parser.mly)
+- 使用ファイル：[parser.mly]({{site.program-url}}/game/parser.mly)
 
 次に、アドベンチャーゲーム用の構文解析ファイル `parser.mly`
 の内容を順に見ていきます。
@@ -2271,7 +2271,7 @@ shift/reduce conflict
 -->
 
 ## メインファイル
-- 使用ファイル：[main.ml](assets/program/game/main.ml)
+- 使用ファイル：[main.ml]({{site.program-url}}/game/main.ml)
 
 最後にメインファイル `main.ml` を見ておきましょう。
 アドベンチャーゲームのメインファイルには、ゲームを動かすための各種の関数が定義されていますが、それらは本書のテーマではありません。
@@ -2435,7 +2435,7 @@ OCaml のコア言語に対する字句解析・構文解析を行う際にも�
 以下、各ファイルについて具体的に説明していきます。
 
 ## 抽象構文木の定義
-- 使用ファイル：[syntax.ml](assets/program/ocaml/syntax.ml)
+- 使用ファイル：[syntax.ml]({{site.program-url}}/ocaml/syntax.ml)
 
 `syntax.ml` には、構文解析の結果、得られる抽象構文木を定義します。
 まず、２項演算子の型を次のように定義します。
@@ -2581,11 +2581,11 @@ type t = Number of int                         (* 整数 *)
 `Syntax.print`
 も簡単に定義することができます。
 ここには示しませんが、定義については
-[`syntax.ml`](assets/program/ocaml/syntax.ml)
+[`syntax.ml`]({{site.program-url}}/ocaml/syntax.ml)
 を参照してください。
 
 ## 字句解析ファイル
-- 使用ファイル：[lexer.mll](assets/program/ocaml/lexer.mll)
+- 使用ファイル：[lexer.mll]({{site.program-url}}/ocaml/lexer.mll)
 
 OCaml のコア言語用の字句解析ファイル `lexer.mll`
 の内容を順に見ていきましょう。
@@ -2739,7 +2739,7 @@ and comment = parse
 これで、入れ子になっているかもしれないコメントを最後まで読み飛ばすことができます。
 
 ## メインファイル
-- 使用ファイル：[main.ml](assets/program/ocaml/main.ml)
+- 使用ファイル：[main.ml]({{site.program-url}}/ocaml/main.ml)
 
 構文解析ファイルを示す前に、ここではメインファイルを先に示しておきます。
 
@@ -2760,7 +2760,7 @@ let _ = go ()
 また、得られた構文木に対応する機械語を出力するようにすればコンパイラを作ることができます。
 
 ## 構文解析ファイル
-- 使用ファイル：[parser.mly](assets/program/ocaml/parser.mly)
+- 使用ファイル：[parser.mly]({{site.program-url}}/ocaml/parser.mly)
 
 ここでは OCaml のコア言語に対する構文解析ファイルを示します。
 構文解析ファイルは、引き算電卓やアドベンチャーゲームと同様、以下から始まります。
@@ -2824,7 +2824,7 @@ open Syntax
 以下、節を分けて各構文を順に説明します。
 
 ### 整数、真偽値と２項演算
-- 使用ファイル：[parser-base.mly](assets/program/ocaml/parser-base.mly)
+- 使用ファイル：[parser-base.mly]({{site.program-url}}/ocaml/parser-base.mly)
 
 最初に扱う言語は整数、真偽値と２項演算のみからなる言語です。
 文法は次の規則から始まります。
@@ -2955,7 +2955,7 @@ expr:
 ここでは優先順位と結合規則を適切に設定することが大事です。
 
 ### 条件文
-- 使用ファイル：[parser-if1.mly](assets/program/ocaml/parser-if1.mly)
+- 使用ファイル：[parser-if1.mly]({{site.program-url}}/ocaml/parser-if1.mly)
 
 この節では、前節の２項演算まで入った言語に（else を持つ）条件文
 `if <式> then <式> else <式>`
@@ -3045,7 +3045,7 @@ shift/reduce conflict が起きたとき、ocamlyacc は「reduce する文法�
 conflict の数は多かったですが、実際の conflict の原因は `ELSE` の優先順位が設定されていないことだけだったということです。
 
 ### else のない条件文
-- 使用ファイル：[parser-if2.mly](assets/program/ocaml/parser-if2.mly)
+- 使用ファイル：[parser-if2.mly]({{site.program-url}}/ocaml/parser-if2.mly)
 
 この節では、前節の言語に else のない条件文
 `if <式> then <式>`
@@ -3147,7 +3147,7 @@ ocamlyacc は shift/reduce conflict が起きた場合、何も指示を出さ�
 これで 14 個、すべての conflict を解消することができました。
 
 ### 変数と fun 文
-- 使用ファイル：[parser-fun1.mly](assets/program/ocaml/parser-fun1.mly)
+- 使用ファイル：[parser-fun1.mly]({{site.program-url}}/ocaml/parser-fun1.mly)
 
 この節では、変数と fun 文を加えます。
 変数は、文法規則 `simple_expr` のところに以下を加えます。
@@ -3199,7 +3199,7 @@ fun 文では前者、つまり可能な限り `->` の右の式を長く取る�
 ここでは、本家の OCaml の実装に合わせてこの位置に `ARROW` の優先順位を設定しました。
 
 ### 複数引数の fun 文
-- 使用ファイル：[parser-fun2.mly](assets/program/ocaml/parser-fun2.mly)
+- 使用ファイル：[parser-fun2.mly]({{site.program-url}}/ocaml/parser-fun2.mly)
 
 前の節で導入した fun 文で許されるのは、厳格に
 
@@ -3279,7 +3279,7 @@ let create_fun variables expr =
 この関数を使うと、複数の引数を受け取る fun 文のアクションは上に示したように `create_fun $2 $4` と書けます。
 
 ### 変数定義・再帰関数定義
-- 使用ファイル：[parser-let1.mly](assets/program/ocaml/parser-let1.mly)
+- 使用ファイル：[parser-let1.mly]({{site.program-url}}/ocaml/parser-let1.mly)
 
 この節では、変数定義と再帰関数定義を加えます。
 これには、文法規則 `expr` のところに以下を加えます。
@@ -3316,7 +3316,7 @@ let 文を入れると conflict を生じますが、これも条件文や fun �
 `THEN`, `ELSE`, `ARROW` との位置関係は任意ですが、ここでも本家の OCaml の実装に合わせてこの位置に設定しました。
 
 ### 再帰しない関数定義と複数の引数
-- 使用ファイル：[parser-let2.mly](assets/program/ocaml/parser-let2.mly)
+- 使用ファイル：[parser-let2.mly]({{site.program-url}}/ocaml/parser-let2.mly)
 
 前の節で let 文を扱えるようにしました。
 しかし、前の節で導入した let 文は形が制限されていてあまり使いやすくありません。
@@ -3381,7 +3381,7 @@ let 文を入れると conflict を生じますが、これも条件文や fun �
 これで、再帰しない関数定義や複数の引数を持つ（再帰）関数定義を書けるようになりました。
 
 ### 関数呼び出し {#App}
-- 使用ファイル：[parser-app.mly](assets/program/ocaml/parser-app.mly)
+- 使用ファイル：[parser-app.mly]({{site.program-url}}/ocaml/parser-app.mly)
 
 この節では、関数呼び出し（関数適用）を加えます。
 
@@ -3488,7 +3488,7 @@ app:
 このような規則にすると conflict は全て解消し、関数呼び出しを読み込むことができるようになります。
 
 ### リスト
-- 使用ファイル：[parser-list.mly](assets/program/ocaml/parser-list.mly)
+- 使用ファイル：[parser-list.mly]({{site.program-url}}/ocaml/parser-list.mly)
 
 この節では、リストを加えます。
 具体的には、次の構文を加えます。
@@ -3658,7 +3658,7 @@ expr_semi_list:
 最初の規則はリスト中の最後の要素を示していますので、その後に `opt_semi` を入れることで `;` が最後に現れるのを許しています。
 
 ### match 文
-- 使用ファイル：[parser-match.mly](assets/program/ocaml/parser-match.mly)
+- 使用ファイル：[parser-match.mly]({{site.program-url}}/ocaml/parser-match.mly)
 
 この節では、リストをばらす match 文を加えます。
 これには、文法規則 `expr` のところに以下を加えます。
@@ -3700,7 +3700,7 @@ match 文を導入すると、次のような曖昧性を生じます。
 以上で、リスト用の match 文を導入できました。
 
 ### 組
-- 使用ファイル：[parser-tuple1.mly](assets/program/ocaml/parser-tuple1.mly)
+- 使用ファイル：[parser-tuple1.mly]({{site.program-url}}/ocaml/parser-tuple1.mly)
 
 この節では、任意の長さの組を加えます。
 組というのは
@@ -3743,7 +3743,7 @@ comma_expr_list:
 などが必要になります。
 
 ### reduce/reduce conflict
-- 使用ファイル：[parser-tuple2.mly](assets/program/ocaml/parser-tuple2.mly)
+- 使用ファイル：[parser-tuple2.mly]({{site.program-url}}/ocaml/parser-tuple2.mly)
 
 この節では reduce/reduce confict という shift/reduce conflict とは別の種類の conflict について説明します。
 
@@ -3884,7 +3884,7 @@ conflict を起こしたふたつの規則を眺め、何が起きているの�
 このように、reduce/reduce conflict が起きたときは、複数の解釈がどのようなものかを把握しそのうちの片方を排除するように文法規則を変更します。
 
 ### 逐次実行文
-- 使用ファイル：[parser-seq.mly](assets/program/ocaml/parser-seq.mly)
+- 使用ファイル：[parser-seq.mly]({{site.program-url}}/ocaml/parser-seq.mly)
 
 最後に、この節では、逐次実行文を加えます。
 逐次実行文というのは
