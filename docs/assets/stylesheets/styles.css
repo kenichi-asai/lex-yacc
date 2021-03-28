@@ -129,6 +129,7 @@ code {
     border-radius: 3px;
     padding: 3px;
     font-family: monospace;
+    line-height: 1;
 }
 
 a {
