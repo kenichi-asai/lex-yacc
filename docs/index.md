@@ -135,7 +135,7 @@ OCaml のコメントのように `(*` と `*)`
 
 引き算言語の文法は以下のように定義されます。
 
-```txt
+```text
 <式> := <式> - <式> | <式> * <式> | - <式> | 整数 | ( <式> )
 ```
 
@@ -157,7 +157,7 @@ OCaml のコメントのように `(*` と `*)`
 
 例えば、
 
-```txt
+```text
 (* test *)
 -12 * (14 - 8 * 2)
 ```
@@ -183,7 +183,7 @@ OCaml のコメントのように `(*` と `*)`
 一方、トークンの定義には存在しない入力を受け取るとエラーになります。
 例えば、
 
-```txt
+```text
 12 * 3 + 5
 ```
 
@@ -195,7 +195,7 @@ OCaml のコメントのように `(*` と `*)`
 また、使われているトークンは正しくても、それが文法に合っていないとエラーになります。
 例えば、
 
-```txt
+```text
 12 - * 5
 ```
 
@@ -262,7 +262,7 @@ OCaml のコメントのように `(*` と `*)`
 
 結局、引き算電卓の内部で使う構文木には以下を使用します。
 
-```txt
+```text
 <式> := <式> - <式> | <式> * <式> | 整数
 ```
 
@@ -325,7 +325,7 @@ let print expr =
 
 最終的に作られる引き算電卓用の字句解析ファイル `lexer.mll` は以下のようになります。
 
-```ocamllex
+```ocaml
 {
 (* 補助的な変数、関数、型などの定義 *)
 open Parser
@@ -383,7 +383,7 @@ rule token = parse
 字句解析ファイルのふたつ目の部分は、正規表現の略記です。
 ここには
 
-```ocamllex
+```ocaml
 let 変数 = 正規表現
 ```
 
@@ -424,13 +424,13 @@ character の集合に含まれない一文字とマッチする。
 
 具体的に `lexer.mll` に定義されている変数を見てみましょう。
 
-```ocamllex
+```ocaml
 let space = [' ' '\t' '\n' '\r']
 ```
 
 `space` は、スペース、タブ、改行、または復帰のどれか一文字を示します。
 
-```ocamllex
+```ocaml
 let digit = ['0'-'9']
 let lower = ['a'-'z']
 let upper = ['A'-'Z']
@@ -439,7 +439,7 @@ let upper = ['A'-'Z']
 また、`digit` は 0 から 9 までの数字一文字、`lower` は小文字一文字、`upper`
 は大文字一文字を示します。
 
-```ocamllex
+```ocaml
 let alpha = lower | upper
 ```
 
@@ -450,13 +450,13 @@ let alpha = lower | upper
 字句解析ファイルの３つ目の部分は、字句解析の中心部分で、ここにはどのような文字列が来たらどのようなトークンを返すかを指定します。
 この部分は
 
-```ocamllex
+```ocaml
 rule token = parse
 ```
 
 と書いた後に
 
-```ocamllex
+```ocaml
 | 正規表現 { 返すべきトークン }
 ```
 
@@ -471,7 +471,7 @@ rule token = parse
 
 具体的に `lexer.mll` に書かれている字句解析の規則をひとつひとつ見ていきましょう。
 
-```ocamllex
+```ocaml
 | space+ { token lexbuf }       (* スペースは読み飛ばす *)
 ```
 
@@ -480,7 +480,7 @@ rule token = parse
 この「入力を捨てる」というのを示しているのが `token lexbuf` です。
 ここの `token` は直前の行で
 
-```ocamllex
+```ocaml
 rule token = parse
 ```
 
@@ -490,7 +490,7 @@ rule token = parse
 
 次の
 
-```ocamllex
+```ocaml
 | "(*" [^ '\n']* "\n"           (* ( * から行末まではコメント *)
          { token lexbuf }
 ```
@@ -505,7 +505,7 @@ rule token = parse
 すると、全体として「`(*` から行末の改行まで」を示すことになります。
 これは引き算電卓ではコメントの部分に相当しますので、`token lexbuf` として読み飛ばします。
 
-```ocamllex
+```ocaml
 | "("    { LPAREN }
 | ")"    { RPAREN }
 | "-"    { MINUS }
@@ -518,13 +518,13 @@ rule token = parse
 複数の文字からなる予約語の場合も同様で、その予約語を単にそのまま書き下すだけです。
 例えば、入力中に余りを示す `mod` を許したかったら
 
-```ocamllex
+```ocaml
 | "mod"  { MOD }
 ```
 
 のように書きます。
 
-```ocamllex
+```ocaml
 | digit+                        (* 数字が１個以上 *)
          { NUMBER (int_of_string (Lexing.lexeme lexbuf)) }
 ```
@@ -554,7 +554,7 @@ rule token = parse
 最長マッチの言っていることは、ここで `1` だけとマッチして、入力が `1` という整数と `2` という整数の列であるというようには解釈しないということです。
 なるべく長い入力とマッチするようになっているので、必ず `12` という整数と解釈されます。
 
-```ocamllex
+```ocaml
 | eof    { EOF }                (* 入力終了 *)
 ```
 
@@ -562,7 +562,7 @@ rule token = parse
 入力が終了したら `EOF` というトークンを返します。
 この `EOF` というトークンも次節の構文解析ファイルで定義されています。
 
-```ocamllex
+```ocaml
 | _      { failwith ("unknown token: " ^ Lexing.lexeme lexbuf) }
 ```
 
@@ -575,7 +575,7 @@ rule token = parse
 例えば `12 * 3 + 5` という入力であれば、`+`
 を読み込んだところで
 
-```txt
+```text
 Fatal error: exception Failure("unknown token: +")
 ```
 
@@ -586,7 +586,7 @@ Fatal error: exception Failure("unknown token: +")
 
 最終的に作られる引き算電卓用の構文解析ファイル `parser.mly` は以下のようになります。
 
-```ocamlyacc
+```ocaml
 %{
 (* 補助的な変数、関数、型などの定義 *)
 %}
@@ -662,7 +662,7 @@ C 言語式の `/* ... */` になることに注意してください。
 トークンは OCaml の構成子になるので大文字で始まる必要があります。
 慣例で、トークンは２文字目以降もすべて大文字にすることが多いようです。
 
-```ocamlyacc
+```ocaml
 %token LPAREN RPAREN
 %token MINUS TIMES
 %token <int> NUMBER     /* これは、整数には int 型の値が伴うことを示す */
@@ -678,7 +678,7 @@ C 言語式の `/* ... */` になることに注意してください。
 文法のエントリーポイント（入り口）になる非終端記号を `%start` で指定します。
 エントリーポイントは、文法用語では**開始記号**と呼ばれます。
 
-```ocamlyacc
+```ocaml
 /* エントリーポイント（開始記号）の定義 */
 %start start
 ```
@@ -696,7 +696,7 @@ C 言語式の `/* ... */` になることに注意してください。
 ここでは各非終端記号がどのような型の構文木を返すかを `%type` で指定します。
 非終端記号の型は ocamlyacc が推論してくれるので、ほとんどの非終端記号についてこの型指定は不要ですが、エントリーポイントの非終端記号だけは型指定が必要です。
 
-```ocamlyacc
+```ocaml
 /* 非終端記号の型をここで宣言する */
 %type <Syntax.t> start
 ```
@@ -714,7 +714,7 @@ C 言語式の `/* ... */` になることに注意してください。
 `*` を先に計算します。
 しかし、引き算言語の文法を見ると `-` と `*` は対等に扱われていて優先順位は指定されていません。
 
-```txt
+```text
 <式> := <式> - <式> | <式> * <式> | - <式> | 整数 | ( <式> )
 ```
 
@@ -739,14 +739,14 @@ C 言語式の `/* ... */` になることに注意してください。
 前者が左結合、後者が右結合です。
 例えば `-` は左結合して欲しいので
 
-```ocamlyacc
+```ocaml
 %left MINUS
 ```
 
 と指定します。
 同様に `*` も左結合して欲しいので
 
-```ocamlyacc
+```ocaml
 %left TIMES
 ```
 
@@ -763,7 +763,7 @@ C 言語式の `/* ... */` になることに注意してください。
 後に書いたものほど優先順位が高くなります。
 例えば、引き算電卓の例では
 
-```ocamlyacc
+```ocaml
 /* 演算子の優先順位を指定する */
 /* 下に行くほど強く結合する */
 %left MINUS
@@ -775,7 +775,7 @@ C 言語式の `/* ... */` になることに注意してください。
 `MINUS` よりも優先されることを示しています。
 これを
 
-```ocamlyacc
+```ocaml
 %left MINUS TIMES
 ```
 
@@ -786,7 +786,7 @@ C 言語式の `/* ... */` になることに注意してください。
 逆に、同じ優先順位のものは同じ行に記述します。
 例えば `-` と同じ優先順位の `+` があったとしたら
 
-```ocamlyacc
+```ocaml
 %left MINUS PLUS
 ```
 
@@ -797,7 +797,7 @@ C 言語式の `/* ... */` になることに注意してください。
 
 `parser.mly` の結合規則と優先順位の指定のところには、さらに最後に次の行が書かれています。
 
-```ocamlyacc
+```ocaml
 %nonassoc UNARY
 ```
 
@@ -818,7 +818,7 @@ C 言語式の `/* ... */` になることに注意してください。
 文法規則は、各非終端記号の生成規則からなります。
 それぞれの生成規則は次の形をしています。
 
-```ocamlyacc
+```ocaml
 非終端記号:
 | シンボルの列 { 返すべき構文木 }
 | シンボルの列 { 返すべき構文木 }
@@ -839,7 +839,7 @@ C 言語式の `/* ... */` になることに注意してください。
 
 生成規則は少し複雑ですので、具体的に見ていきましょう。
 
-```ocamlyacc
+```ocaml
 start:
 | expr EOF               { $1 }
 ```
@@ -864,7 +864,7 @@ start:
 `$2` は `EOF` の値を指すことになりますが、`EOF`
 は引数を持たず値がないためエラーとなります。
 
-```ocamlyacc
+```ocaml
 simple_expr:
 | NUMBER                 { Syntax.Num ($1) }
 | LPAREN expr RPAREN     { $2 }
@@ -913,7 +913,7 @@ simple_expr:
 `$1` は `LPAREN` の値を指すことになりますが、`LPAREN`
 は引数を持たず値がないためエラーとなります。
 
-```ocamlyacc
+```ocaml
 expr:
 | simple_expr            { $1 }
 | expr MINUS expr        { Syntax.Op ($1, Syntax.Minus, $3) }
@@ -1049,14 +1049,14 @@ let rec f expr = match expr with
 
 ### 自分でコンパイルする方法
 
-```txt
+```text
 ocamllex lexer.mll
 ```
 
 を実行すると `lexer.mll` がコンパイルされて、字句解析プログラム
 `lexer.ml` が生成されます。同様に
 
-```txt
+```text
 ocamlyacc parser.mly
 ```
 
@@ -1073,7 +1073,7 @@ OCaml プログラムのコンパイルと同じです。
 
 引き算電卓の場合は以下のようになります。
 
-```txt
+```text
 ocamlc -c syntax.ml
 ocamlc -c parser.mli
 ocamlc -c parser.ml
@@ -1084,13 +1084,13 @@ ocamlc -c main.ml
 
 最後にリンクします。
 
-```txt
+```text
 ocamlc -o dentaku syntax.cmo parser.cmo lexer.cmo eval.cmo main.cmo
 ```
 
 これで `dentaku` という名前の実行ファイルができました。
 実際に使ってみましょう。
-```txt
+```text
 $ ./dentaku
 (* test *)
 -12 * (14 - 8 * 2)
@@ -1107,7 +1107,7 @@ Result : 24
 ビルドツールである dune を使うと、いちいちコンパイルするコマンドを順に打たなくても、一気にすべてコンパイルしてくれます。
 dune を使うには以下のような dune という名前のファイルを用意します。
 
-```txt
+```text
 (executable
  (name main))
 (ocamllex lexer)
@@ -1125,7 +1125,7 @@ dune を使うには以下のような dune という名前のファイルを用
 
 上のような `dune` ファイルを用意しておくと、コンパイルは以下のように行えます。
 
-```txt
+```text
 dune build main.exe
 ```
 
@@ -1133,7 +1133,7 @@ dune build main.exe
 実行するには `_build/default/main.exe`
 を呼び出せば良いのですが、以下のようにしても実行できます。
 
-```txt
+```text
 dune exec ./main.exe
 ```
 
@@ -1147,7 +1147,7 @@ dune exec ./main.exe
 OCamlMakefile を使うのが便利です。
 それには以下のような Makefile という名前のファイルを作ります。
 
-```makefile
+```make
 SOURCES = syntax.ml parser.mly lexer.mll eval.ml main.ml
 RESULT = dentaku
 OCAMLMAKEFILE = OCamlMakefile
@@ -1182,14 +1182,14 @@ include $(OCAMLMAKEFILE)
 文法が曖昧かどうかは `parser.mly` をコンパイルする際のメッセージでわかります。
 `parser.mly` を
 
-```txt
+```text
 ocamlyacc parser.mly
 ```
 
 のようにコンパイルした際、何もメッセージが出ずにコンパイルが終了したら、文法は曖昧ではありません。
 一方、文法が曖昧だと
 
-```txt
+```text
 17 shift/reduce conflicts.
 ```
 
@@ -1199,7 +1199,7 @@ ocamlyacc parser.mly
 
 文法が曖昧であることがわかったら、次に
 
-```txt
+```text
 ocamlyacc -v parser.mly
 ```
 
@@ -1215,7 +1215,7 @@ ocamlyacc -v parser.mly
 具体的に曖昧な文法の例を見てみましょう。
 前の章で作った `parser.mly` から優先順位の指定
 
-```ocamlyacc
+```ocaml
 %left MINUS
 %left TIMES
 %nonassoc UNARY
@@ -1223,13 +1223,13 @@ ocamlyacc -v parser.mly
 
 を削除し、さらに `%prec` を使っている `expr` の単項のマイナスの規則からも優先順位の指定を削除して次のようにします。
 
-```ocamlyacc
+```ocaml
 | MINUS expr             { Syntax.Op (Syntax.Num (0), Syntax.Minus, $2) }
 ```
 
 この状態で `ocamlyacc` を使ってコンパイルすると、次のような警告メッセージが出ます。
 
-```txt
+```text
 6 shift/reduce conflicts.
 ```
 
@@ -1241,7 +1241,7 @@ ocamlyacc -v parser.mly
 ここで扱っている例では、以下の各部分にそれぞれ２ヶ所ずつ、合計６ヶ所の
 conflict が記述されています。
 
-```txt
+```text
 10: shift/reduce conflict (shift 11, reduce 7) on MINUS
 10: shift/reduce conflict (shift 12, reduce 7) on TIMES
 state 10
@@ -1300,7 +1300,7 @@ shift/reduce conflict が起きたときは、最初の conflict を報告して
 
 状態 10 の記述は、上記の文法規則に続いて次のようになっています。
 
-```txt
+```text
 	MINUS  shift 11
 	TIMES  shift 12
 	RPAREN  reduce 7
@@ -1323,7 +1323,7 @@ shift/reduce conflict が起きたときは、最初の conflict を報告して
 
 他の conflict も見ておきましょう。
 
-```txt
+```text
 15: shift/reduce conflict (shift 11, reduce 5) on MINUS
 15: shift/reduce conflict (shift 12, reduce 5) on TIMES
 state 15
@@ -1341,7 +1341,7 @@ state 15
 conflict を報告している行の括弧の中を見ると `reduce 5` と書かれているので、(5) の文法規則を見ます。
 (5) の規則はふたつ書かれていますが、このうち必要なのは `.` が最後に来ている規則です。
 
-```txt
+```text
 	expr : expr MINUS expr .  (5)
 ```
 
@@ -1355,7 +1355,7 @@ conflict を報告している行の括弧の中を見ると `reduce 5` と書�
 
 最後のふたつの conflict は以下です。
 
-```txt
+```text
 16: shift/reduce conflict (shift 11, reduce 6) on MINUS
 16: shift/reduce conflict (shift 12, reduce 6) on TIMES
 state 16
@@ -1392,7 +1392,7 @@ state 16
 ひとつのトークンのみ（あるいは優先順位が同じトークンのみ）が現れる場合の conflict は、結合規則を指定することで解消できます。
 具体的には、優先順位の指定のところで
 
-```ocamlyacc
+```ocaml
 %left MINUS
 ```
 
@@ -1405,7 +1405,7 @@ state 16
 と解釈します。
 一方、
 
-```ocamlyacc
+```ocaml
 %right MINUS
 ```
 
@@ -1439,7 +1439,7 @@ state 16
 このような場合は、演算子の優先順位を指定することで曖昧性を解消します。
 次のように優先順位を設定します。
 
-```ocamlyacc
+```ocaml
 /* 演算子の優先順位を指定する */
 /* 下に行くほど強く結合する */
 %left MINUS
@@ -1479,7 +1479,7 @@ state 16
 上のケースで `MINUS <式>` を優先したい場合は、reduce される規則の優先順位を `%prec` を使って変更します。
 具体的には、まず優先順位の指定のところで
 
-```ocamlyacc
+```ocaml
 /* 演算子の優先順位を指定する */
 /* 下に行くほど強く結合する */
 %left MINUS
@@ -1491,7 +1491,7 @@ state 16
 のように `UNARY` を定義します。
 その上で、それを単項のマイナスの規則で `%prec` を使って指定します。
 
-```ocamlyacc
+```ocaml
 | MINUS expr %prec UNARY { Syntax.Op (Syntax.Num (0), Syntax.Minus, $2) }
 ```
 
@@ -1514,7 +1514,7 @@ state 16
 ここで、文法規則の優先順位は `%prec` で指定されていたらその優先順位、指定されていなかったら「一番、右にあるトークン」の優先順位になります。
 例えば
 
-```txt
+```text
 	expr : expr MINUS expr .  (5)
 ```
 
@@ -1605,7 +1605,7 @@ shift/reduce conflict が出たときには、shift を選ぶのが良い場合�
 
 アドベンチャーゲームで使われる文法は以下のように定義されます。
 
-```txt
+```text
 <文>　　　  := <方向> <方向助詞> 進む
 　　　　　　| 家 <方向助詞> 入る
 　　　　　　| 家 から 出る
@@ -1715,7 +1715,7 @@ type t = Idousuru of string             (* 移動する *)
 アドベンチャーゲーム用の字句解析ファイル `lexer.mll`
 の内容を順に見ていきましょう。
 
-```ocamllex
+```ocaml
 {
 (* 補助的な変数、関数、型などの定義 *)
 open Parser
@@ -1732,7 +1732,7 @@ exception Error of string
 
 次は、正規表現の略記です。
 
-```ocamllex
+```ocaml
 (* 正規表現の略記 *)
 (* [...] の中は character '...' でなくてはならない *)
 let zenkaku1 = ['\224'-'\239']
@@ -1751,7 +1751,7 @@ let zenkaku = zenkaku1 _ _
 
 字句解析の規則は次のようになります。
 
-```ocamllex
+```ocaml
 (* 字句解析の規則 *)
 rule token = parse
 | "東" | "ひがし"                      { HOUKOU ("東") }
@@ -1830,7 +1830,7 @@ end of file ではなく end of line にしてみました。
 次に、アドベンチャーゲーム用の構文解析ファイル `parser.mly`
 の内容を順に見ていきます。
 
-```ocamlyacc
+```ocaml
 %{
 (* 補助的な変数、関数、型などの定義 *)
 open Syntax
@@ -1853,7 +1853,7 @@ exception Error of string
 を宣言しました。
 `parser.mly` では代わりにそれを使うことにします。
 
-```ocamlyacc
+```ocaml
 /* トークンの定義 */    /* 以降、コメントが C 式になることに注意 */
 %token <string> HOUKOU ITEM TADOUSHI TANDOKUDOUSHI
                         /* これらには string 型の値が伴うことを示している */
@@ -1874,7 +1874,7 @@ exception Error of string
 
 アドベンチャーゲームには演算子は出てこないので、結合規則や優先順位の指定はでてきていません。
 
-```ocamlyacc
+```ocaml
 /* 入力の文法：
 
 文　　　  = 方向 方向助詞 "進む"
@@ -1906,7 +1906,7 @@ exception Error of string
 
 次に文法規則を示します。
 
-```ocamlyacc
+```ocaml
 /* 以下の %% は省略不可。それ以降に文法規則を書く */
 %%
 
@@ -1920,7 +1920,7 @@ start:
 でしたが、アドベンチャーゲームでは入力が１行のみなので `EOL`
 にしています。
 
-```ocamlyacc
+```ocaml
 bun:
 | HOUKOU houkoujoshi SUSUMU
         { Idousuru ($1) }
@@ -1976,7 +1976,7 @@ mokutekigo:
 具体的には `bun` と `mokutekigo` の生成規則を変更します。
 `bun` の生成規則は次のように変更します。
 
-```ocamlyacc
+```ocaml
 bun:
 | HOUKOU houkoujoshi SUSUMU
         { Idousuru ($1) }
@@ -2014,14 +2014,14 @@ bun:
 `HOUKOU` から始まる規則を見てみましょう。
 ここは、これまで
 
-```ocamlyacc
+```ocaml
 | HOUKOU houkoujoshi SUSUMU
         { Idousuru ($1) }
 ```
 
 だけだったところに
 
-```ocamlyacc
+```ocaml
 | HOUKOU houkoujoshi error
         { raise (Error ("「" ^ $1 ^ "に」どうする？")) }
 ```
@@ -2041,7 +2041,7 @@ bun:
 
 同様に次の
 
-```ocamlyacc
+```ocaml
 | HOUKOU error
         { raise (Error ("「" ^ $1 ^ "」にどうする？")) }
 ```
@@ -2056,7 +2056,7 @@ bun:
 
 最後の
 
-```ocamlyacc
+```ocaml
 | error
         { raise (Error ("え？")) }
 ```
@@ -2066,7 +2066,7 @@ bun:
 
 同様にして `mokutekigo` の生成規則は次のように変更します。
 
-```ocamlyacc
+```ocaml
 mokutekigo:
 | ITEM WO
         { $1 }
@@ -2084,7 +2084,7 @@ mokutekigo:
 ここではそれを実現するために、手動で `parser.mly` の文法に手を加えます。
 まず、`anys` と `any` という非終端記号を次のように定義します。
 
-```ocamlyacc
+```ocaml
 anys:
 | any           { $1 }
 | any anys      { $1 ^ $2 }
@@ -2114,7 +2114,7 @@ any:
 
 `anys` を使ってまず `start` の生成規則を次のように変更します。
 
-```ocamlyacc
+```ocaml
 start:
 | bun EOL
         { $1 }
@@ -2132,7 +2132,7 @@ start:
 
 さらに `bun` の生成規則を次のように変更します。
 
-```ocamlyacc
+```ocaml
 bun:
 | HOUKOU houkoujoshi SUSUMU
         { Idousuru ($1) }
@@ -2170,14 +2170,14 @@ bun:
 `HOUKOU` から始まる規則を見てみましょう。
 ここは、これまで
 
-```ocamlyacc
+```ocaml
 | HOUKOU houkoujoshi SUSUMU
         { Idousuru ($1) }
 ```
 
 だったところに
 
-```ocamlyacc
+```ocaml
 | HOUKOU houkoujoshi
         { raise (Error ("「" ^ $1 ^ "に」どうする？")) }
 ```
@@ -2196,7 +2196,7 @@ bun:
 
 同様に次の
 
-```ocamlyacc
+```ocaml
 | HOUKOU
         { raise (Error ("「" ^ $1 ^ "」にどうする？")) }
 ```
@@ -2211,7 +2211,7 @@ bun:
 
 最後の
 
-```ocamlyacc
+```ocaml
 |
         { raise (Error ("え？")) }
 ```
@@ -2227,7 +2227,7 @@ bun:
 しかし、上記の変更を加えると、文法は曖昧になります。
 これは `ocamlyacc parser.mly` を実行したときに
 
-```txt
+```text
 17 shift/reduce conflicts.
 ```
 
@@ -2235,7 +2235,7 @@ bun:
 例えば `北に進む` という入力があったとしましょう。
 これは、もちろん
 
-```ocamlyacc
+```ocaml
 | HOUKOU houkoujoshi SUSUMU
         { Idousuru ($1) }
 ```
@@ -2243,7 +2243,7 @@ bun:
 の場合に相当しますので `Idousuru ("北")` を返して欲しいところです。
 ところが `北に` の部分を
 
-```ocamlyacc
+```ocaml
 | HOUKOU houkoujoshi
         { raise (Error ("「" ^ $1 ^ "に」どうする？")) }
 ```
@@ -2251,7 +2251,7 @@ bun:
 にマッチさせて `bun` を読み込めたと解釈し、`進む` の部分は `start`
 の規則
 
-```ocamlyacc
+```ocaml
 | bun anys EOL
         { raise (Error ("「" ^ $2 ^ "」？")) }
 ```
@@ -2395,7 +2395,7 @@ let y = 4 (* y 座標の初期値 *)
 
 この章で扱う OCaml のコア言語の文法は、直感的には以下のように定義されます。
 
-```txt
+```text
 <式> := 整数
 　　　| <式> + <式> | <式> - <式> | <式> * <式> | <式> / <式> | <式> mod <式> | - <式>
 　　　| true | false | <式> && <式> | <式> || <式>
@@ -2599,7 +2599,7 @@ type t = Number of int                         (* 整数 *)
 OCaml のコア言語用の字句解析ファイル `lexer.mll`
 の内容を順に見ていきましょう。
 
-```ocamllex
+```ocaml
 {
 (* 補助的な変数、関数、型などの定義 *)
 open Parser
@@ -2610,7 +2610,7 @@ open Parser
 
 次は正規表現の略記です。
 
-```ocamllex
+```ocaml
 (* 正規表現の略記 *)
 (* [...] の中は character '...' でなくてはならない *)
 let space = [' ' '\t' '\n' '\r']
@@ -2624,7 +2624,7 @@ let alpha = lower | upper
 
 字句解析の規則は次のようになります。
 
-```ocamllex
+```ocaml
 rule token = parse
 | space+  { token lexbuf }      (* スペースは読み飛ばす *)
 | "(*"    { comment lexbuf;
@@ -2698,7 +2698,7 @@ rule token = parse
 これまでに何回、コメントに入ったかを表現するため、コメント開始の印を見つけるたびに、「コメント終了の印をもうひとつ読み込む」ような動作を追加します。
 具体的には、以下のように `token` に加えて `comment` という規則を相互再帰する形で下に追加します。
 
-```ocamllex
+```ocaml
 rule token = parse
 | space+  { token lexbuf }      (* スペースは読み飛ばす *)
 | "(*"    { comment lexbuf;
@@ -2774,7 +2774,7 @@ let _ = go ()
 ここでは OCaml のコア言語に対する構文解析ファイルを示します。
 構文解析ファイルは、引き算電卓やアドベンチャーゲームと同様、以下から始まります。
 
-```ocamlyacc
+```ocaml
 %{
 (* 補助的な変数、関数、型などの定義 *)
 open Syntax
@@ -2783,7 +2783,7 @@ open Syntax
 
 次にトークンの定義です。
 
-```ocamlyacc
+```ocaml
 /* 以降、どういうわけかコメントが C 式になることに注意 */
 /* トークンの定義 */
 %token <int> NUMBER
@@ -2808,7 +2808,7 @@ open Syntax
 エントリーポイントとなる開始記号は、引き算電卓と同じく `start` にしましょう。
 また、`start` が返す抽象構文木の型は `Syntax.t` 型になります。
 
-```ocamlyacc
+```ocaml
 /* 非終端記号の型をここで宣言する */
 %type <Syntax.t> start
 
@@ -2838,7 +2838,7 @@ open Syntax
 最初に扱う言語は整数、真偽値と２項演算のみからなる言語です。
 文法は次の規則から始まります。
 
-```ocamlyacc
+```ocaml
 start:
 | expr EOF
         { $1 }
@@ -2847,7 +2847,7 @@ start:
 これは引き算電卓のときと同じです。
 次に、引き算電卓のときと同じように「アトミックな式」を表す `simple_expr` を定義します。
 
-```ocamlyacc
+```ocaml
 simple_expr:
 | NUMBER
         { Number ($1) }
@@ -2864,7 +2864,7 @@ simple_expr:
 
 最後に `expr` の規則です。
 
-```ocamlyacc
+```ocaml
 expr:
 | simple_expr
         { $1 }
@@ -2902,7 +2902,7 @@ expr:
 特に、最後の規則では優先度 `UNARY` を設定するとともに、単項のマイナスを２項演算のマイナスに置き換えています。
 ここでは単項の演算子はマイナスのみとしましたが、プラスも単項の演算子として使いたいときには、その規則も次のように追加します。
 
-```ocamlyacc
+```ocaml
 | PLUS expr %prec UNARY
         { $2 }
 ```
@@ -2913,7 +2913,7 @@ expr:
 この変換が `GREATER` の規則で行われています。
 `GREATER` の規則は
 
-```ocamlyacc
+```ocaml
 | expr GREATER expr
         { Op ($3, Less, $1) }
 ```
@@ -2927,7 +2927,7 @@ expr:
 ここでは２項演算子の間の優先順位を定めます。
 次のようにします。
 
-```ocamlyacc
+```ocaml
 /* 演算子の優先順位を指定する */
 /* 下に行くほど強く結合する */
 %right OR
@@ -2971,7 +2971,7 @@ expr:
 を加えます。
 これには、文法規則の `expr` のところに以下を加えます。
 
-```ocamlyacc
+```ocaml
 | IF expr THEN expr ELSE expr
         { If ($2, $4, $6) }
 ```
@@ -2979,7 +2979,7 @@ expr:
 基本的にはこれだけなのですが、このままでは文法が曖昧になります。
 実際、ocamlyacc でコンパイルすると
 
-```txt
+```text
 13 shift/reduce conflicts.
 ```
 
@@ -2988,7 +2988,7 @@ expr:
 すると、conflict は以下で起きていることがわかります。
 （状態 46 は、必要な文法規則のみを載せています。）
 
-```txt
+```text
 46: shift/reduce conflict (shift 15, reduce 21) on PLUS
 46: shift/reduce conflict (shift 16, reduce 21) on MINUS
 46: shift/reduce conflict (shift 17, reduce 21) on TIMES
@@ -3031,7 +3031,7 @@ shift/reduce conflict が起きたとき、ocamlyacc は「reduce する文法�
 したがって、これら全ての優先順位より `ELSE` の優先順位を下げる必要があります。
 結果として、以下のように設定します。
 
-```ocamlyacc
+```ocaml
 /* 演算子の優先順位を指定する */
 /* 下に行くほど強く結合する */
 %nonassoc ELSE
@@ -3061,7 +3061,7 @@ conflict の数は多かったですが、実際の conflict の原因は `ELSE`
 を加えます。
 これには、文法規則の `expr` のところに以下を加えます。
 
-```ocamlyacc
+```ocaml
 | IF expr THEN expr
         { IfThen ($2, $4) }
 ```
@@ -3069,7 +3069,7 @@ conflict の数は多かったですが、実際の conflict の原因は `ELSE`
 基本的にはこれだけなのですが、このままでは再び、文法が曖昧になります。
 ocamlyacc でコンパイルすると
 
-```txt
+```text
 14 shift/reduce conflicts.
 ```
 
@@ -3077,7 +3077,7 @@ ocamlyacc でコンパイルすると
 `ocamlyacc -v` でコンパイルして、構文解析表 `parser.output` を調べてみると、conflict は以下で起きていることがわかります。
 （状態 44 は、必要な文法規則のみを載せています。）
 
-```txt
+```text
 44: shift/reduce conflict (shift 15, reduce 22) on PLUS
 44: shift/reduce conflict (shift 16, reduce 22) on MINUS
 44: shift/reduce conflict (shift 17, reduce 22) on TIMES
@@ -3131,7 +3131,7 @@ ocamlyacc は shift/reduce conflict が起きた場合、何も指示を出さ�
 ここでは `THEN` の優先順位を `ELSE` の優先順位より下げることで shift を選択させるようにします。
 具体的には、以下のようにします。
 
-```ocamlyacc
+```ocaml
 /* 演算子の優先順位を指定する */
 /* 下に行くほど強く結合する */
 %nonassoc THEN
@@ -3161,14 +3161,14 @@ ocamlyacc は shift/reduce conflict が起きた場合、何も指示を出さ�
 この節では、変数と fun 文を加えます。
 変数は、文法規則 `simple_expr` のところに以下を加えます。
 
-```ocamlyacc
+```ocaml
 | VAR
         { Var ($1) }
 ```
 
 また、fun 文は文法規則 `expr` のところに以下を加えます。
 
-```ocamlyacc
+```ocaml
 | FUN VAR ARROW expr
         { Fun ($2, $4) }
 ```
@@ -3186,7 +3186,7 @@ fun 文を入れると conflict を生じますが、これは条件文のとき
 の２通りの解釈ができるため曖昧になります。
 fun 文では前者、つまり可能な限り `->` の右の式を長く取るのが普通ですので、fun 文の文法規則の一番右のトークンである `->` の優先順位を２項演算より低く設定します。
 
-```ocamlyacc
+```ocaml
 /* 演算子の優先順位を指定する */
 /* 下に行くほど強く結合する */
 %nonassoc THEN
@@ -3229,14 +3229,14 @@ fun 文では前者、つまり可能な限り `->` の右の式を長く取る�
 
 ここで `<変数列>` は次のように定義します。
 
-```txt
+```text
 <変数列> := 変数 | 変数 <変数列>
 ```
 
 これで `変数` のひとつ以上の列を表現しています。
 これを文法規則に直すと以下になります。
 
-```ocamlyacc
+```ocaml
 variables:
 | VAR
         { [$1] }
@@ -3250,14 +3250,14 @@ variables:
 
 `variables` を使って fun 文の構文を以下のように変更します。
 
-```ocamlyacc
+```ocaml
 | FUN variables ARROW expr
         { create_fun $2 $4 }
 ```
 
 もともと fun 文の規則は
 
-```ocamlyacc
+```ocaml
 | FUN VAR ARROW expr
         { Fun ($2, $4) }
 ```
@@ -3293,7 +3293,7 @@ let create_fun variables expr =
 この節では、変数定義と再帰関数定義を加えます。
 これには、文法規則 `expr` のところに以下を加えます。
 
-```ocamlyacc
+```ocaml
 | LET VAR EQUAL expr IN expr
         { Let ($2, $4, $6) }
 | LET REC VAR VAR EQUAL expr IN expr
@@ -3304,7 +3304,7 @@ let 文を入れると conflict を生じますが、これも条件文や fun �
 `in` 以下に `<式> + <式>` のようなものが来たときに、先に let 文を reduce するのか、shift して２項演算を先に行うのかで曖昧となります。
 これは、次のように `IN` の優先順位を２項演算より下げて設定すれば解消します。
 
-```ocamlyacc
+```ocaml
 /* 演算子の優先順位を指定する */
 /* 下に行くほど強く結合する */
 %nonassoc IN
@@ -3345,7 +3345,7 @@ let 文を入れると conflict を生じますが、これも条件文や fun �
 `<変数列>` は複数の引数を持つ fun 文のところで導入したもので、変数のひとつ以上の列を示します。
 これを使って、まず変数定義の構文を以下のようにします。
 
-```ocamlyacc
+```ocaml
 | LET VAR EQUAL expr IN expr
         { Let ($2, $4, $6) }
 | LET VAR variables EQUAL expr IN expr
@@ -3369,7 +3369,7 @@ let 文を入れると conflict を生じますが、これも条件文や fun �
 同様にして再帰関数も複数の引数を受け取れるようにします。
 次のようにします。
 
-```ocamlyacc
+```ocaml
 | LET REC VAR VAR EQUAL expr IN expr
         { Letrec ($3, $4, $6, $8) }
 | LET REC VAR VAR variables EQUAL expr IN expr
@@ -3381,7 +3381,7 @@ let 文を入れると conflict を生じますが、これも条件文や fun �
 
 `variables` は変数のひとつ以上の列を表すので、上のふたつをまとめて
 
-```ocamlyacc
+```ocaml
 | LET REC VAR variables EQUAL expr IN expr
         { Letrec ($3, List.hd $4, create_fun (List.tl $4) $6, $8) }
 ```
@@ -3397,7 +3397,7 @@ let 文を入れると conflict を生じますが、これも条件文や fun �
 OCaml の関数呼び出しは、`f 1` のように関数部分の後に引数（の列）をそのまま並べて書きます。
 関数部分や引数部分には任意の式が許されるので、次のような文法規則を `expr` のところに加えたくなります。
 
-```ocamlyacc
+```ocaml
 | expr expr
         { App ($1, $2) }
 ```
@@ -3425,7 +3425,7 @@ OCaml の関数呼び出しは、`f 1` のように関数部分の後に引数�
 `simple_expr` は、関数呼び出しの引数部分に来ても分解されることのないアトミックな式を表します。
 `simple_expr` の定義は以下のようになっていました。
 
-```ocamlyacc
+```ocaml
 simple_expr:
 | NUMBER
         { Number ($1) }
@@ -3446,7 +3446,7 @@ simple_expr:
 
 `simple_expr` を使うと関数呼び出しの規則は
 
-```ocamlyacc
+```ocaml
 | expr simple_expr
         { App ($1, $2) }
 ```
@@ -3477,14 +3477,14 @@ OCaml のような言語では、複数の引数を取る関数は、引数を�
 
 まず、関数呼び出し用に `app` という非終端記号を用意し、それを使って `expr` の規則に以下を追加します。
 
-```ocamlyacc
+```ocaml
 | app
         { $1 }
 ```
 
 その上で、`app` は次のように定義します。
 
-```ocamlyacc
+```ocaml
 app:
 | simple_expr simple_expr
         { App ($1, $2) }
@@ -3508,7 +3508,7 @@ app:
 
 空リスト `[]` はそのままの形で関数呼び出しの引数になれるので `simple_expr` に以下の規則を追加します。
 
-```ocamlyacc
+```ocaml
 | LBRACKET RBRACKET
         { Nil }
 ```
@@ -3516,14 +3516,14 @@ app:
 一方、`<式> :: <式>` は２項演算なので関数呼び出しの引数にはなれません。
 そこで `expr` に以下の規則を追加します。
 
-```ocamlyacc
+```ocaml
 | expr CONS expr
         { Cons ($1, $3) }
 ```
 
 ただし、このままでは shift/reduce conflict が生じますので、`CONS` の優先順位を設定します。
 
-```ocamlyacc
+```ocaml
 /* 演算子の優先順位を指定する */
 /* 下に行くほど強く結合する */
 %nonassoc IN
@@ -3591,7 +3591,7 @@ app:
 まずは `[ <式> ; <式> ; ... ]` の `...` の部分を読み込めるようにします。
 `<変数列>` を定義したときと同様にして、`;` で区切られた `<式>` のひとつ以上の列を示す `<式の列>` を次のように定義します。
 
-```txt
+```text
 <式の列> := <式> | <式> ; <式の列>
 ```
 
@@ -3599,7 +3599,7 @@ app:
 `[ <式> ; <式> ; ... ]` は `[ <式の列> ]` と表現できます。
 `<式の列> ` を文法規則に直すと以下のようになります。
 
-```ocamlyacc
+```ocaml
 expr_semi_list:
 | expr
         { [$1] }
@@ -3612,7 +3612,7 @@ expr_semi_list:
 `expr_semi_list` を使うと、リストの要素を順に並べる記法は次のように実現できます。
 まず、`[ <式の列> ]` に対応して、次のような規則を `simple_expr` に挿入します。
 
-```ocamlyacc
+```ocaml
 | LBRACKET expr_semi_list RBRACKET
         { create_list $2 }
 ```
@@ -3640,7 +3640,7 @@ let create_list exprs =
 次のようにします。
 まず、`;` があってもなくても良いことを示す非終端記号 `opt_semi` を用意します。
 
-```ocamlyacc
+```ocaml
 opt_semi:
 |
 	{ () }
@@ -3655,7 +3655,7 @@ opt_semi:
 
 `opt_semi` を使って、`expr_semi_list` の規則を以下のように変更します。
 
-```ocamlyacc
+```ocaml
 expr_semi_list:
 | expr opt_semi
         { [$1] }
@@ -3672,7 +3672,7 @@ expr_semi_list:
 この節では、リストをばらす match 文を加えます。
 これには、文法規則 `expr` のところに以下を加えます。
 
-```ocamlyacc
+```ocaml
 | MATCH expr WITH LBRACKET RBRACKET ARROW expr BAR VAR CONS VAR ARROW expr
         { Match ($2, $7, $9, $11, $13) }
 ```
@@ -3687,7 +3687,7 @@ OCaml の match 文には色々な形のパターンを書くことができ、�
 
 `[]` と `変数 :: 変数` のパターンが逆順の match 文を許したいと思えば
 
-```ocamlyacc
+```ocaml
 | MATCH expr WITH VAR CONS VAR ARROW expr BAR LBRACKET RBRACKET ARROW expr
         { Match ($2, $13, $4, $6, $8) }
 ```
@@ -3723,7 +3723,7 @@ OCaml の組は `1, 2` のように括弧を書かなくても構わないので
 組は括弧でくくられていますので、そのままで関数呼び出しの引数として使うことができます。
 したがって `expr` ではなく `simple_expr` に挿入します。
 
-```ocamlyacc
+```ocaml
 | LPAREN expr comma_expr_list RPAREN
         { Tuple ($2, $3) }
 ```
@@ -3731,7 +3731,7 @@ OCaml の組は `1, 2` のように括弧を書かなくても構わないので
 組は中に少なくともふたつの式が入ります。
 ひとつ目の式 `expr` を読み込んだ後、次にきている `comma_expr_list` というのは「`, <式>` のひとつ以上の列」を表す非終端記号で次のように定義されます。
 
-```ocamlyacc
+```ocaml
 comma_expr_list:
 | COMMA expr
         { [$2] }
@@ -3765,14 +3765,14 @@ comma_expr_list:
 
 前の節では `simple_expr` の中に
 
-```ocamlyacc
+```ocaml
 | LPAREN expr comma_expr_list RPAREN
         { Tuple ($2, $3) }
 ```
 
 を追加しましたが、ここではその代わりに
 
-```ocamlyacc
+```ocaml
 | LPAREN expr comma_expr_list_rest
         { Tuple ($2, $3) }
 ```
@@ -3781,7 +3781,7 @@ comma_expr_list:
 ここで `comma_expr_list_rest` というのが、最後の `RPAREN` までを含めた非終端記号です。
 `comma_expr_list_rest` は次のように定義できます。
 
-```ocamlyacc
+```ocaml
 comma_expr_list_rest:
 | COMMA expr RPAREN
         { [$2] }
@@ -3794,7 +3794,7 @@ comma_expr_list_rest:
 
 ここで、`comma_expr_list_rest` の最初の規則の ` COMMA expr` を次のように削除してみます。
 
-```ocamlyacc
+```ocaml
 comma_expr_list_rest:
 | RPAREN
         { [] }
@@ -3806,7 +3806,7 @@ comma_expr_list_rest:
 本書では、これまでひとつ以上を表す非終端記号を多く使いましたが、０個以上というのもよく使われます。
 このように変更して ocamlyacc に通すと、これまでの shift/reduce conflict とは異なる
 
-```txt
+```text
 30 reduce/reduce conflicts.
 ```
 
@@ -3816,7 +3816,7 @@ comma_expr_list_rest:
 これがどういうことなのかを具体的に、構文解析表を見ながら考えてみましょう。
 `ocamlyacc -v` でコンパイルして、構文解析表 `parser.output` を調べてみると、conflict は以下で起きていることがわかります。
 
-```txt
+```text
 56: reduce/reduce conflict (reduce 6, reduce 43) on NUMBER
 56: reduce/reduce conflict (reduce 6, reduce 43) on PLUS
 56: reduce/reduce conflict (reduce 6, reduce 43) on MINUS
@@ -3884,7 +3884,7 @@ conflict を起こしたふたつの規則を眺め、何が起きているの�
 そのひとつの方法は、`comma_expr_list_rest` の定義を元に戻すことです。
 別法として、`comma_expr_list_rest` は「`, <式>` を０個以上」のままにしておいて、`simple_expr` の組のところを
 
-```ocamlyacc
+```ocaml
 | LPAREN expr COMMA expr comma_expr_list_rest
         { Tuple ($2, $4 :: $5) }
 ```
@@ -3903,7 +3903,7 @@ conflict を起こしたふたつの規則を眺め、何が起きているの�
 のように `;` で複数の式をつないだものです。
 逐次実行文をサポートするのに、まず思いつくのは以下の規則を `expr` に加えることです。
 
-```ocamlyacc
+```ocaml
 | expr SEMI expr
         { Seq ($1, [$3]) }
 ```
@@ -3912,7 +3912,7 @@ conflict を起こしたふたつの規則を眺め、何が起きているの�
 
 しかし、この規則を `expr` に加えるととても多くの conflict を生じます。
 
-```txt
+```text
 53 shift/reduce conflicts, 1 reduce/reduce conflict.
 ```
 
@@ -3983,7 +3983,7 @@ let rec f n =
 構文解析表の記述は以下のようになります。
 （長いので、該当部分のみを示しています。）
 
-```txt
+```text
 80: reduce/reduce conflict (reduce 35, reduce 42) on RBRACKET
 state 80
         expr : expr SEMI expr .  (35)
@@ -4003,7 +4003,7 @@ state 80
 以上の考察から、ここではまず逐次実行文が許される場所を考察し、それにしたがって文法を書き換えることにします。
 最初に、逐次実行文を示す非終端記号 `seq_expr` を導入します。
 
-```ocamlyacc
+```ocaml
 seq_expr:
 | expr
         { [$1] }
@@ -4023,7 +4023,7 @@ seq_expr:
 ここには条件文やリストの要素を列挙する記法が含まれていないことに注意してください。
 これらに対応して、以下のように `expr` の規則を変更します。
 
-```ocamlyacc
+```ocaml
 | LET VAR EQUAL expr IN seq_expr
         { Let ($2, $4, create_seq $6) }
 | LET VAR variables EQUAL expr IN seq_expr
@@ -4059,7 +4059,7 @@ let create_seq exprs = match exprs with
 以上のようにすると、reduce/reduce conflict は解消します。
 リストの中身を示す `expr_semi_list` の定義は
 
-```ocamlyacc
+```ocaml
 expr_semi_list:
 | expr opt_semi
         { [$1] }
@@ -4092,7 +4092,7 @@ expr_semi_list:
 ここでは、後者を選択したいので「`<式>` を `seq_expr` に reduce する規則」の優先順位を `+` の優先順位より低く設定してあげます。
 ところが `seq_expr` の最初に出てくる「`<式>` を `seq_expr` に reduce する規則」は次の最初の規則のようになっています。
 
-```ocamlyacc
+```ocaml
 seq_expr:
 | expr
         { [$1] }
@@ -4103,7 +4103,7 @@ seq_expr:
 これを見るとシンボルの列が非終端記号の `expr` のみで、優先順位を設定できるトークンがありません。
 そこで `UNARY` と同じように、新たに優先順位を指定するトークンを定義して、以下のように指定します。
 
-```ocamlyacc
+```ocaml
 seq_expr:
 | expr %prec below_SEMI
         { [$1] }
@@ -4126,7 +4126,7 @@ seq_expr:
 そのためには `;` の優先順位を reduce する規則の優先順位を決めている `below_SEMI` よりも高く設定します。
 ここでは、以下のようにしました。
 
-```ocamlyacc
+```ocaml
 /* 演算子の優先順位を指定する */
 /* 下に行くほど強く結合する */
 %nonassoc IN
