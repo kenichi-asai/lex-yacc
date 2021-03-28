@@ -129,9 +129,12 @@ code {
     border-radius: 3px;
     padding: 3px;
     font-family: monospace;
-    line-height: 120%;
 }
 
 a {
     text-decoration: none;
+}
+
+.highlight {
+    line-height: 120%;
 }
