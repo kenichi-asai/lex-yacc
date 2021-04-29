@@ -1,7 +1,7 @@
 ---
 title: 最低限の lex / yacc
 author: 浅井 健一
-date: 2020 年 10 月 22 日
+date: 2021 年 4 月 29 日
 layout: home
 ---
 
