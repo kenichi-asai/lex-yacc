@@ -1,7 +1,7 @@
 ---
 title: 最低限の lex / yacc
 author: 浅井 健一
-date: 2024 年 10 月 22 日
+date: 2024 年 10 月 24 日
 layout: home
 ---
 
@@ -2996,7 +2996,7 @@ expr:
 という警告メッセージが出て、13 個も conflict を起こしていることがわかります。
 そこで `ocamlyacc -v` でコンパイルして、構文解析表 `parser.output` を調べてみましょう。
 すると、conflict は以下で起きていることがわかります。
-（状態 46 は、必要な文法規則のみを載せています。）
+（最後の state 46 の後の文法規則は、shift/reduce conflict を起こしている 21 番の文法規則のみを載せています。）
 
 ```text
 46: shift/reduce conflict (shift 15, reduce 21) on PLUS
